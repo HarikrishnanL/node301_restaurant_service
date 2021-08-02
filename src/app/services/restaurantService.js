@@ -3,11 +3,43 @@ const RestaurantMenuModel = require('../models/RestaurantMenuModel');
 const restaurantCustomMessages = require('../domain/customMessages/restaurant');
 const restaurantStatus = require('../domain/enumerations/restaurantStatus');
 const apiResponse = require('../helpers/apiResponse');
+const { op } = require('sequelize');
 
 
-exports.getAllRestaurant = async (pageSize, pageIndex, sortingKey, sortingPriority,searchKey) => {
+
+
+exports.getAllRestaurant = async (pageSize, pageIndex, sortingKey, sortingPriority, searchKey) => {
     try {
-
+        let order = [[sortingKey, sortingPriority]];
+        let paginate = {
+            offset: (pageIndex - 1) * pageSize,
+            limit: pageSize,
+        }
+        const searchQuery = getSearchQuery(searchKey);
+        const combinedSearchQuery = {
+            where: searchKey ? { [Op.or]: searchQuery } : {},
+            include: [
+                {
+                    model: RestaurantMenuModel,
+                    as: "restaurantMenuMaps"
+                }
+            ],
+            distinct: true,
+            ...paginate,
+            order
+        };
+        const restaurants = await RestaurantModel.findAndCountAll(combinedSearchQuery);
+        const paginateData = searchKey ? {} : {
+            totalCount: restaurants.count,
+            totalPages: Math.ceil(restaurants.count / pageSize),
+            pageSize,
+            pageIndex
+        }
+        if (restaurants.row.length > 0) {
+            return { response: restaurants.rows, "paginateData": paginateData }
+        } else {
+            throw new Error("Restaurants records not found")
+        }
     } catch (error) {
         throw error;
     }
@@ -44,7 +76,7 @@ exports.createRestaurant = async (body) => {
             throw new Error(restaurantCustomMessages.errorMessages.RESTAURANT_RECORDS_ALREADY_EXISTED);
         } else {
             const newRestaurant = await RestaurantModel.create(body);
-            const newRestaurantMenu = await RestaurantMenuModel.bulkCreate(body.menu,{returning:true});
+            const newRestaurantMenu = await RestaurantMenuModel.bulkCreate(body.menu, { returning: true });
             if (newRestaurant && newRestaurantMenu) {
                 await newRestaurant.setRestaurantMenuMaps(newRestaurantMenu);
                 return newRestaurant;
@@ -87,7 +119,7 @@ exports.updateRestaurantMenu = async (body, restaurantId, restaurantMenuId) => {
                 const updateRestaurantMenu = await RestaurantMenuModel.update(body, { where: { id: restaurantMenuId } })
                 if (updateRestaurantMenu[0] === 1) {
                     return true
-                }else{
+                } else {
                     throw new Error(restaurantCustomMessages.errorMessages.FAILED_UPDATE_RESTAURANT_MENU_RECORDS)
                 }
             } else {
@@ -96,53 +128,65 @@ exports.updateRestaurantMenu = async (body, restaurantId, restaurantMenuId) => {
         } else {
             throw new Error(restaurantCustomMessages.errorMessages.RESTAURANT_RECORDS_NOT_FOUND)
         }
-    } catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-exports.updateRestaurantStatus = async (body,restaurantId)=>{
-    try{
+exports.updateRestaurantStatus = async (body, restaurantId) => {
+    try {
         const restaurant = await RestaurantModel.findOne({ where: { id: restaurantId } });
-        if(restaurant){
-            const updateRestaurantStatus = await RestaurantModel.update({status:body.status},{where:{id:restaurantId}});
-            if(updateRestaurantStatus[0] === 1){
-                return true ;
-            }else{
+        if (restaurant) {
+            const updateRestaurantStatus = await RestaurantModel.update({ status: body.status }, { where: { id: restaurantId } });
+            if (updateRestaurantStatus[0] === 1) {
+                return true;
+            } else {
                 throw new Error(restaurantCustomMessages.errorMessages.FAILED_UPDATE_RESTAURANT_RECORDS);
             }
-        }else{
+        } else {
             throw new Error(restaurantCustomMessages.errorMessages.RESTAURANT_RECORDS_NOT_FOUND);
         }
-    }catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-exports.updateRestaurantMenuStatus = async (body,restaurantMenuId)=>{
-    try{
+exports.updateRestaurantMenuStatus = async (body, restaurantMenuId) => {
+    try {
         const restaurantMenu = await RestaurantMenuModel.findOne({ where: { id: restaurantMenuId } });
-        if(restaurantMenu){
-            const updateRestaurantMenuStatus = await RestaurantMenuModel.update({status:body.status},{where:{id:restaurantMenuId}})
-            if(updateRestaurantMenuStatus[0] === 1){
+        if (restaurantMenu) {
+            const updateRestaurantMenuStatus = await RestaurantMenuModel.update({ status: body.status }, { where: { id: restaurantMenuId } })
+            if (updateRestaurantMenuStatus[0] === 1) {
                 return true;
-            }else{
+            } else {
                 throw new Error(restaurantCustomMessages.errorMessages.FAILED_UPDATE_RESTAURANT_MENU_RECORDS)
             }
-        }else{
+        } else {
             throw new Error(restaurantCustomMessages.errorMessages.RESTAURANT_MENU_RECORDS_NOT_FOUND)
         }
 
-    }catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-exports.deleteRestaurant = async (restaurantId)=>{
-    try{
-        const resturant = await RestaurantModel.destroy({where:{id:restaurantId}})
+exports.deleteRestaurant = async (restaurantId) => {
+    try {
+        const resturant = await RestaurantModel.destroy({ where: { id: restaurantId } })
         return true
-    }catch(error){
+    } catch (error) {
         throw error
     }
+}
+
+const getSearchQuery = (searchKey) => {
+    const searchQuery = { [Op.iLike]: "%" + searchKey + "%" };
+    const queries = [
+        { name: searchQuery },
+        { cusine: searchQuery },
+        { rating: searchQuery },
+        { "$restaurantMenuMaps.name$": searchQuery }
+    ];
+
+    return queries;
 }

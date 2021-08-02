@@ -1,7 +1,7 @@
 const restaurantService = require("../services/restaurantService");
 const apiResponse = require("../helpers/apiResponse");
 const restaurantCustomMessages = require("../domain/customMessages/restaurant");
-
+const logger = require("../utils/logger");
 
 exports.createRestaurant = async (req, res) => {
     try {
@@ -15,10 +15,12 @@ exports.createRestaurant = async (req, res) => {
 
 exports.getSingleRestaurant = async (req, res) => {
     try {
+        logger.info("get Single restaurant")
         const restaurant = await restaurantService.getSingleRestaurant(req.params.restaurantId);
         return apiResponse.successResponseWithData(res, restaurantCustomMessages.successMessages.RECORDS_FOUND, restaurant)
 
     } catch (error) {
+        logger.error(error.message)
         return apiResponse.errorResponse(res, error.message);
     }
 }
