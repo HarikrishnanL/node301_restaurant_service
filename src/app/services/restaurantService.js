@@ -3,7 +3,8 @@ const RestaurantMenuModel = require('../models/RestaurantMenuModel');
 const restaurantCustomMessages = require('../domain/customMessages/restaurant');
 const restaurantStatus = require('../domain/enumerations/restaurantStatus');
 const apiResponse = require('../helpers/apiResponse');
-const { op } = require('sequelize');
+const { Op } = require('sequelize');
+const logger = require('../utils/logger');
 
 
 
@@ -35,7 +36,7 @@ exports.getAllRestaurant = async (pageSize, pageIndex, sortingKey, sortingPriori
             pageSize,
             pageIndex
         }
-        if (restaurants.row.length > 0) {
+        if (restaurants.rows.length > 0) {
             return { response: restaurants.rows, "paginateData": paginateData }
         } else {
             throw new Error("Restaurants records not found")

@@ -4,3 +4,27 @@ Info:infotimestamp:Aug-02-2021message:get Single restaurant
 Info:errortimestamp:Aug-02-2021message:Restaurant records not found
 Info: info timestamp: Aug-02-2021 message: get Single restaurant
 Info: error timestamp: Aug-02-2021 message: Restaurant records not found
+Info: info timestamp: Aug-02-2021 message: get Single restaurant
+Info: error timestamp: Aug-02-2021 message: Restaurant records not found
+Info: info timestamp: Aug-02-2021 message: get Single restaurant
+Info: error timestamp: Aug-02-2021 message: invalid input syntax for type integer: "all"
+Info: info timestamp: Aug-02-2021 message: get Single restaurant
+Info: error timestamp: Aug-02-2021 message: invalid input syntax for type integer: "all"
+Info: info timestamp: Aug-02-2021 message: get Single restaurant
+Info: error timestamp: Aug-02-2021 message: invalid input syntax for type integer: "all"
+Info: info timestamp: Aug-02-2021 message: get Single restaurant
+Info: error timestamp: Aug-02-2021 message: invalid input syntax for type integer: "all"
+Info: info timestamp: Aug-02-2021 message: get Single restaurant
+Info: error timestamp: Aug-02-2021 message: Restaurant records not found
+Info: error timestamp: Aug-02-2021 message: searchKey is not defined
+Info: error timestamp: Aug-02-2021 message: Op is not defined
+Info: info timestamp: Aug-02-2021 message: combinedSearchQuery
+Info: error timestamp: Aug-02-2021 message: Cannot read property 'length' of undefined
+Info: info timestamp: Aug-02-2021 message: combinedSearchQuery
+Info: info timestamp: Aug-02-2021 message: restauranats ====>
+Info: error timestamp: Aug-02-2021 message: response is not defined
+Info: info timestamp: Aug-02-2021 message: combinedSearchQuery
+Info: info timestamp: Aug-02-2021 message: restauranats ====>
+Info: error timestamp: Aug-02-2021 message: response is not defined
+Info: info timestamp: Aug-02-2021 message: combinedSearchQuery
+Info: info timestamp: Aug-02-2021 message: restauranats ====>

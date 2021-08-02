@@ -3,6 +3,22 @@ const apiResponse = require("../helpers/apiResponse");
 const restaurantCustomMessages = require("../domain/customMessages/restaurant");
 const logger = require("../utils/logger");
 
+
+exports.getAllRestaurant = async (req,res)=>{
+    try{
+        let { size, index, key, sortingPriority,searchKey } = req.query;
+        size = size ? size : 10;
+        index = index && index > 0 ? index : 1;
+        key = key ? key : "name";
+        sortingPriority = sortingPriority ? sortingPriority : "ASC";
+        const restaurants = await restaurantService.getAllRestaurant(size, index, key, sortingPriority,searchKey);
+        return apiResponse.successResponseWithData(res, restaurantCustomMessages.successMessages.RECORDS_FOUND, {restaurants:restaurants.response,paginateData:restaurants.paginateData})
+    }catch(error){
+        logger.error(error.message)
+        return apiResponse.errorResponse(res, error.message);
+    }
+}
+
 exports.createRestaurant = async (req, res) => {
     try {
         const newRestaurant = await restaurantService.createRestaurant(req.body);

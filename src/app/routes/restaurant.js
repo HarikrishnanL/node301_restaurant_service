@@ -10,7 +10,7 @@ const authSessionValidator = require('../utils/sessionValidatorUtils');
 // CRUD restaurant routes
 router.post('/restaurant',authSessionValidator.adminSessionAuthValidator,restaurantController.createRestaurant);
 
-router.get('/restaurant/:restaurantId',authSessionValidator.sessionAuthValidator,restaurantController.getSingleRestaurant);
+router.get('/restaurant/single/:restaurantId',authSessionValidator.sessionAuthValidator,restaurantController.getSingleRestaurant);
 
 router.put('/restaurant/:restaurantId',authSessionValidator.adminSessionAuthValidator,restaurantController.updateRestaurant);
 
@@ -22,7 +22,7 @@ router.patch('/restaurant/:restaurantId/menu/:restaurantMenuId',authSessionValid
 
 router.delete('restaurant/:restaurantId',authSessionValidator.adminSessionAuthValidator,restaurantController.deleteRestaurant);
 
-
+router.get('/restaurant/all',authSessionValidator.sessionAuthValidator,restaurantController.getAllRestaurant);
 
 
 module.exports = router;
