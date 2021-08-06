@@ -72,7 +72,7 @@ exports.getSingleRestaurant = async (restaurantId) => {
 
 exports.createRestaurant = async (body) => {
     try {
-        const restaurant = await RestaurantModel.findOne({ where: { email: body.email } });
+        const restaurant = await RestaurantModel.findOne({ where: { email: body.email, status: restaurantStatus.Active } });
         if (restaurant) {
             throw new Error(restaurantCustomMessages.errorMessages.RESTAURANT_RECORDS_ALREADY_EXISTED);
         } else {
@@ -173,7 +173,7 @@ exports.updateRestaurantMenuStatus = async (body, restaurantMenuId) => {
 
 exports.deleteRestaurant = async (restaurantId) => {
     try {
-        const resturant = await RestaurantModel.destroy({ where: { id: restaurantId } })
+        await RestaurantModel.destroy({ where: { id: restaurantId } })
         return true
     } catch (error) {
         throw error
