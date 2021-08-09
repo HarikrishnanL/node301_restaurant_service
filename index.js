@@ -6,8 +6,8 @@ require('dotenv').config();
 const RestaurantModel = require("./src/app/models/RestaurantModel");
 
 // testing purpose
-const amqp_connection_string = "amqps://vpcafnvn:IZKTpMMbAzj-anWfqkEWM0N47tWXvxKo@elk.rmq2.cloudamqp.com/vpcafnvn";
-const amqp_task_queue_str = "rating_post";
+const amqp_connection_string = process.env.amqp_connection_url;
+const amqp_task_queue_str = process.env.amqp_queue_string;
 // end testing purpose
 let open = require('amqplib').connect(amqp_connection_string);
 // import database
@@ -15,10 +15,7 @@ const db = require("./src/app/config/database");
 
 //import routes
 const Restaurant = require("./src/app/routes/restaurant");
-
-//import ampq consumer 
-
-
+ 
 
 const app = express();
 app.use(morgan("dev"))
@@ -44,7 +41,6 @@ open.then(function (conn) {
     return ch.assertQueue(amqp_task_queue_str).then(function (ok) {
         return ch.consume(amqp_task_queue_str, async function (msg) {
             if (msg !== null) {
-                console.log(JSON.parse(msg.content), "everything is fine");
                 let rating_restaurant = [];
                 let data = JSON.parse(msg.content);
                 let restaurantDetail = await RestaurantModel.findOne({ where: { id: data.userRating.restaurantId } });

@@ -3,6 +3,7 @@ exports.successResponse = (res,msg)=>{
         status:true,
         message:msg
     }
+    console.log("data:",data)
     return res.status(200).json(data);
 }
 

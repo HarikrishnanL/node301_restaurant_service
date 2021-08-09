@@ -25,7 +25,7 @@ exports.createRestaurant = async (req, res) => {
         return apiResponse.successResponseWithData(res, restaurantCustomMessages.successMessages.RESTAURANT_RECORDS_CREATED, { id: newRestaurant.id, name: newRestaurant.name });
 
     } catch (error) {
-        return apiResponse.errorResponse(res, error.message);
+        return apiResponse.customErrorResponse(res, error.message,404);
     }
 }
 
@@ -37,7 +37,7 @@ exports.getSingleRestaurant = async (req, res) => {
 
     } catch (error) {
         logger.error(error.message)
-        return apiResponse.errorResponse(res, error.message);
+        return apiResponse.customErrorResponse(res, error.message,404);
     }
 }
 
